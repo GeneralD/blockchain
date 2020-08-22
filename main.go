@@ -23,4 +23,7 @@ func main() {
 	util.Logger.Debugf("PrivateKey: %s", w.PrivateKeyString())
 	util.Logger.Debugf("PublicKey:  %s", w.PublicKeyString())
 	util.Logger.Debugf("Address:    %s", w.Address())
+
+	t := wallet.NewTransaction(w.PrivateKey(), w.PublicKey(), w.Address(), "B", 1.0)
+	util.Logger.Debugf("signature:  %s", t.GenerateSignature())
 }
