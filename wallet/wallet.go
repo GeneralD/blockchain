@@ -49,6 +49,10 @@ func (w Wallet) Address() string {
 	return w.address
 }
 
+func (w Wallet) SendTo(recipientAddress string, value float32) *Transaction {
+	return NewTransaction(w.PrivateKey(), w.PublicKey(), w.Address(), recipientAddress, value)
+}
+
 func generateWalletAddress(publicKey ecdsa.PublicKey) string {
 	// SHA256 hashing on the PublicKey (32 bytes)
 	h2 := sha256.New()

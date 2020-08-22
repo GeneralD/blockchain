@@ -2,28 +2,41 @@ package main
 
 import (
 	"blockchain/blockchain"
-	"blockchain/util"
+	"blockchain/utils"
 	"blockchain/wallet"
 )
 
 func main() {
-	bc := blockchain.NewBlockchain("miner_blockchain_address")
-	bc.AddTransaction("A", "B", 1.0)
-	bc.Mining()
-	bc.AddTransaction("C", "D", 2.0)
-	bc.AddTransaction("X", "Y", 3.0)
-	bc.Mining()
-	bc.Print()
+	//bc := blockchain.NewBlockchain("miner_blockchain_address")
+	//bc.AddTransaction("A", "B", 1.0)
+	//bc.Mining()
+	//bc.AddTransaction("C", "D", 2.0)
+	//bc.AddTransaction("X", "Y", 3.0)
+	//bc.Mining()
+	//bc.Print()
+	//
+	//utils.Logger.Debugf("miner_blockchain_address %.1f\n", bc.TotalAmount("miner_blockchain_address"))
+	//utils.Logger.Debugf("C %.1f\n", bc.TotalAmount("C"))
+	//utils.Logger.Debugf("D %.1f\n", bc.TotalAmount("D"))
+	//
+	//w := wallet.NewWallet()
+	//utils.Logger.Debugf("PrivateKey: %s", w.PrivateKeyString())
+	//utils.Logger.Debugf("PublicKey:  %s", w.PublicKeyString())
+	//utils.Logger.Debugf("Address:    %s", w.Address())
+	//
+	//t := wallet.NewTransaction(w.PrivateKey(), w.PublicKey(), w.Address(), "B", 1.0)
+	//utils.Logger.Debugf("signature:  %s", t.GenerateSignature())
 
-	util.Logger.Debugf("miner_blockchain_address %.1f\n", bc.TotalAmount("miner_blockchain_address"))
-	util.Logger.Debugf("C %.1f\n", bc.TotalAmount("C"))
-	util.Logger.Debugf("D %.1f\n", bc.TotalAmount("D"))
+	//walletM := wallet.NewWallet()
+	walletA := wallet.NewWallet()
+	walletB := wallet.NewWallet()
 
-	w := wallet.NewWallet()
-	util.Logger.Debugf("PrivateKey: %s", w.PrivateKeyString())
-	util.Logger.Debugf("PublicKey:  %s", w.PublicKeyString())
-	util.Logger.Debugf("Address:    %s", w.Address())
+	// Wallet side
+	transaction := walletA.SendTo(walletB.Address(), 1.0)
+	signature := transaction.GenerateSignature()
 
-	t := wallet.NewTransaction(w.PrivateKey(), w.PublicKey(), w.Address(), "B", 1.0)
-	util.Logger.Debugf("signature:  %s", t.GenerateSignature())
+	// Blockchain side
+	blockchain := blockchain.NewBlockchain("miner_blockchain_address")
+	isAdded := blockchain.AddTransaction(walletA.Address(), walletB.Address(), 1.0, walletA.PublicKey(), signature)
+	utils.Logger.Debugf("Result: %t", isAdded)
 }

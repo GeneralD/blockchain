@@ -1,7 +1,8 @@
 package blockchain
 
 import (
-	"blockchain/util"
+	"blockchain/utils"
+	"crypto/ecdsa"
 	"fmt"
 	"strings"
 )
@@ -28,16 +29,23 @@ func NewBlockchain(blockchainAddress string) *Blockchain {
 }
 
 // Add a new transaction in pool
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
+func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32, senderPublicKey *ecdsa.PublicKey, signature *utils.Signature) bool {
 	t := NewTransaction(sender, recipient, value)
-	bc.transactionPool = append(bc.transactionPool, t)
+
+	// If the sender is MiningSender, no need to verify
+	if sender == MiningSender || t.VerifySignature(senderPublicKey, signature) {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	}
+	utils.Logger.Error("Adding transaction denied!")
+	return false
 }
 
 // Add transaction to earn reward and work to create a new block.
 func (bc *Blockchain) Mining() bool {
-	bc.AddTransaction(MiningSender, bc.blockchainAddress, MiningReward)
+	bc.AddTransaction(MiningSender, bc.blockchainAddress, MiningReward, nil, nil)
 	bc.createBlock()
-	util.Logger.Tracef("action=mining, status=success")
+	utils.Logger.Tracef("action=mining, status=success")
 	return true
 }
 
@@ -46,10 +54,10 @@ func (bc *Blockchain) TotalAmount(blockchainAddress string) float32 {
 	var amount float32 = 0.0
 	for _, b := range bc.chain {
 		for _, t := range b.transactions {
-			if blockchainAddress == t.recipientBlockchainAddress {
+			if blockchainAddress == t.recipientAddress {
 				amount += t.value
 			}
-			if blockchainAddress == t.senderBlockchainAddress {
+			if blockchainAddress == t.senderAddress {
 				amount -= t.value
 			}
 		}
@@ -81,7 +89,7 @@ func (bc *Blockchain) lastBlock() *Block {
 func (bc *Blockchain) copyTransactionPool() []*Transaction {
 	transactions := make([]*Transaction, 0)
 	for _, t := range bc.transactionPool {
-		transactions = append(transactions, NewTransaction(t.senderBlockchainAddress, t.recipientBlockchainAddress, t.value))
+		transactions = append(transactions, NewTransaction(t.senderAddress, t.recipientAddress, t.value))
 	}
 	return transactions
 }
@@ -107,8 +115,8 @@ func (bc *Blockchain) proofOfWork() int {
 // Print the blockchain
 func (bc *Blockchain) Print() {
 	for i, block := range bc.chain {
-		util.Logger.Tracef("%s Block %d %s", strings.Repeat("=", 35), i, strings.Repeat("=", 35))
+		utils.Logger.Tracef("%s Block %d %s", strings.Repeat("=", 35), i, strings.Repeat("=", 35))
 		block.Print()
 	}
-	util.Logger.Tracef(strings.Repeat("*", 80))
+	utils.Logger.Tracef(strings.Repeat("*", 80))
 }
