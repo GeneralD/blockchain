@@ -29,11 +29,22 @@ func NewBlockchain(blockchainAddress string) *Blockchain {
 }
 
 // Add a new transaction in pool
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32, senderPublicKey *ecdsa.PublicKey, signature *utils.Signature) bool {
-	t := NewTransaction(sender, recipient, value)
+func (bc *Blockchain) AddTransaction(senderAddress string, recipientAddress string, value float32, senderPublicKey *ecdsa.PublicKey, signature *utils.Signature) bool {
+	t := NewTransaction(senderAddress, recipientAddress, value)
 
-	// If the sender is MiningSender, no need to verify
-	if sender == MiningSender || t.VerifySignature(senderPublicKey, signature) {
+	// If the senderAddress is MiningSender, no need to verify
+	if senderAddress == MiningSender {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	}
+
+	if t.VerifySignature(senderPublicKey, signature) {
+		/*
+			if bc.TotalAmount(senderAddress) < value {
+				utils.Logger.Warnf("Not enough balance in wallet: %s", senderAddress)
+				return false
+			}
+		*/
 		bc.transactionPool = append(bc.transactionPool, t)
 		return true
 	}

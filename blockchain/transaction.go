@@ -14,8 +14,8 @@ type Transaction struct {
 	value            float32
 }
 
-func NewTransaction(sender string, recipient string, value float32) *Transaction {
-	return &Transaction{sender, recipient, value}
+func NewTransaction(senderAddress string, recipientAddress string, value float32) *Transaction {
+	return &Transaction{senderAddress, recipientAddress, value}
 }
 
 func (t *Transaction) VerifySignature(senderPublicKey *ecdsa.PublicKey, signature *utils.Signature) bool {
