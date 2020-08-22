@@ -1,6 +1,7 @@
 package blockchain
 
 import (
+	"blockchain/util"
 	"fmt"
 	"strings"
 )
@@ -36,7 +37,7 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 func (bc *Blockchain) Mining() bool {
 	bc.AddTransaction(MiningSender, bc.blockchainAddress, MiningReward)
 	bc.createBlock()
-	Logger.Tracef("action=mining, status=success")
+	util.Logger.Tracef("action=mining, status=success")
 	return true
 }
 
@@ -106,8 +107,8 @@ func (bc *Blockchain) proofOfWork() int {
 // Print the blockchain
 func (bc *Blockchain) Print() {
 	for i, block := range bc.chain {
-		Logger.Tracef("%s Block %d %s", strings.Repeat("=", 35), i, strings.Repeat("=", 35))
+		util.Logger.Tracef("%s Block %d %s", strings.Repeat("=", 35), i, strings.Repeat("=", 35))
 		block.Print()
 	}
-	Logger.Tracef(strings.Repeat("*", 80))
+	util.Logger.Tracef(strings.Repeat("*", 80))
 }

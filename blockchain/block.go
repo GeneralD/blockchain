@@ -1,6 +1,7 @@
 package blockchain
 
 import (
+	"blockchain/util"
 	"crypto/sha256"
 	"encoding/json"
 	"time"
@@ -42,9 +43,9 @@ func (b *Block) MarshalJSON() ([]byte, error) {
 }
 
 func (b *Block) Print() {
-	Logger.Tracef("timestamp       %d", b.timestamp)
-	Logger.Tracef("nonce           %d", b.nonce)
-	Logger.Tracef("previous_hash   %x", b.previousHash)
+	util.Logger.Tracef("timestamp       %d", b.timestamp)
+	util.Logger.Tracef("nonce           %d", b.nonce)
+	util.Logger.Tracef("previous_hash   %x", b.previousHash)
 	for _, t := range b.transactions {
 		t.Print()
 	}

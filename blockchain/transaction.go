@@ -1,6 +1,7 @@
 package blockchain
 
 import (
+	"blockchain/util"
 	"encoding/json"
 	"strings"
 )
@@ -28,8 +29,8 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Transaction) Print() {
-	Logger.Tracef(strings.Repeat("- ", 40))
-	Logger.Tracef("sender_blockchain_address      %s", t.senderBlockchainAddress)
-	Logger.Tracef("recipient_blockchain_address   %s", t.recipientBlockchainAddress)
-	Logger.Tracef("value                          %.1f", t.value)
+	util.Logger.Tracef(strings.Repeat("- ", 40))
+	util.Logger.Tracef("sender_blockchain_address      %s", t.senderBlockchainAddress)
+	util.Logger.Tracef("recipient_blockchain_address   %s", t.recipientBlockchainAddress)
+	util.Logger.Tracef("value                          %.1f", t.value)
 }

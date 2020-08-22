@@ -1,4 +1,4 @@
-package blockchain
+package util
 
 import (
 	"github.com/Mandala/go-log"
