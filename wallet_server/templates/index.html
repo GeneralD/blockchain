@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <title>Wallet</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $.ajax({
+                url: '/wallet', type: 'POST', success: function (response) {
+                    $('#public_key').val(response['public_key'])
+                    $('#private_key').val(response['private_key'])
+                    $('#blockchain_address').val(response['address'])
+                }, error: function (error) {
+                    console.error(error)
+                }
+            })
+        })
+    </script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/augmented-ui/augmented.css">
     <style>
         @import url("https://fonts.googleapis.com/css?family=Barlow|Tomorrow:400,700&display=swap");

@@ -2,8 +2,10 @@ package main
 
 import (
 	"blockchain/utils"
+	"blockchain/wallet"
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 	"path"
 	"strconv"
@@ -37,6 +39,7 @@ func (s *WalletServer) Run() {
 	//http.Handle(path.Join(s.rootPath, "resources"), strip)
 
 	http.HandleFunc(path.Join(s.rootPath, "index.html"), s.index)
+	http.HandleFunc(path.Join(s.rootPath, "wallet"), s.wallet)
 	portStr := strconv.Itoa(int(s.port))
 	utils.Logger.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", s.domain, portStr), nil))
 }
@@ -47,6 +50,19 @@ func (s *WalletServer) index(writer http.ResponseWriter, request *http.Request) 
 		t, _ := template.ParseFiles(path.Join(templateDirectory, "index.html"))
 		_ = t.Execute(writer, "")
 	default:
+		utils.Logger.Error("Invalid HTTP method")
+	}
+}
+
+func (s *WalletServer) wallet(writer http.ResponseWriter, request *http.Request) {
+	switch request.Method {
+	case http.MethodPost:
+		writer.Header().Add("Content-Type", "application/json")
+		myWallet := wallet.NewWallet()
+		m, _ := myWallet.MarshalJSON()
+		_, _ = io.WriteString(writer, string(m[:]))
+	default:
+		writer.WriteHeader(http.StatusBadRequest)
 		utils.Logger.Error("Invalid HTTP method")
 	}
 }

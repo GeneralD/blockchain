@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"github.com/btcsuite/btcutil/base58"
 	"golang.org/x/crypto/ripemd160"
@@ -25,32 +26,44 @@ func NewWallet() *Wallet {
 }
 
 // The private key
-func (w Wallet) PrivateKey() *ecdsa.PrivateKey {
+func (w *Wallet) PrivateKey() *ecdsa.PrivateKey {
 	return w.privateKey
 }
 
 // The private key as a string
-func (w Wallet) PrivateKeyString() string {
+func (w *Wallet) PrivateKeyString() string {
 	return fmt.Sprintf("%x", w.privateKey.D.Bytes())
 }
 
 // The public key
-func (w Wallet) PublicKey() *ecdsa.PublicKey {
+func (w *Wallet) PublicKey() *ecdsa.PublicKey {
 	return w.publicKey
 }
 
 // The public key as a string
-func (w Wallet) PublicKeyString() string {
+func (w *Wallet) PublicKeyString() string {
 	return fmt.Sprintf("%x%x", w.publicKey.X, w.publicKey.Y)
 }
 
 // The blockchain address
-func (w Wallet) Address() string {
+func (w *Wallet) Address() string {
 	return w.address
 }
 
-func (w Wallet) SendTo(recipientAddress string, value float32) *Transaction {
+func (w *Wallet) SendTo(recipientAddress string, value float32) *Transaction {
 	return NewTransaction(w.PrivateKey(), w.PublicKey(), w.Address(), recipientAddress, value)
+}
+
+func (w *Wallet) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		PrivateKey string `json:"private_key"`
+		PublicKey  string `json:"public_key"`
+		Address    string `json:"address"`
+	}{
+		PrivateKey: w.PrivateKeyString(),
+		PublicKey:  w.PublicKeyString(),
+		Address:    w.address,
+	})
 }
 
 func generateWalletAddress(publicKey ecdsa.PublicKey) string {
