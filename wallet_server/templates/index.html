@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wallet</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/augmented-ui/augmented.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Barlow|Tomorrow:400,700&display=swap");
+
+        * {
+            color: var(--black-color);
+            font-family: Tomorrow, sans-serif;
+        }
+
+        body {
+            background: repeating-linear-gradient(-45deg, var(--black-color), var(--black-color) 9px, var(--red-color) 9px, var(--red-color) 18px);
+        }
+
+        .main {
+            text-align: center;
+        }
+
+        .numbers {
+            font-size: larger;
+        }
+
+        .augmented {
+            display: inline-block;
+            margin: 15px;
+            --aug-border: 9px;
+            --aug-inset: 9px;
+            padding: 60px;
+            text-align: center;
+            --aug-border-bg: linear-gradient(var(--yellow-color), transparent), linear-gradient(to right, var(--purple-color), transparent), var(--limegreen-color);
+            --aug-inset-bg: var(--lightyellow-color);
+        }
+
+        :root {
+            --lightyellow-color: gold;
+            --yellow-color: #fcee09;
+            --red-color: #ff003c;
+            --black-color: #050a0e;
+            --limegreen-color: #00ff9f;
+            --cyan-color: #00b8ff;
+            --blue-color: #001eff;
+            --violet-color: #bd00ff;
+            --purple-color: #d600ff;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            outline: none;
+            color: var(--black-color);
+            cursor: pointer;
+            padding: 20px 25px;
+            position: relative;
+            font-family: Tomorrow, sans-serif;
+            font-size: .85rem;
+            text-transform: uppercase;
+        }
+
+        .selection-positive {
+            background-color: var(--limegreen-color);
+        }
+
+        .selection-negative {
+            background-color: var(--yellow-color);
+        }
+
+        .wallet_info {
+            --aug-t: 25px;
+            --aug-r: 20px;
+            --aug-tr-height: 33%;
+        }
+
+        .send_control {
+            --aug-bl: 25px;
+            --aug-r-width: 15px;
+            --aug-r-height: 50%;
+            --aug-t: 10px;
+            --aug-t-width: 33%;
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <div class="augmented wallet_info" augmented-ui="tl-clip br-rect tr-clip-y exe">
+        <h1>Wallet</h1>
+        <p id="wallet_balance">Balance: <span id="wallet_amount" class="numbers">0</span></p>
+        <button id="reload_wallet" class="btn selection-negative">Reload Wallet</button>
+
+        <p>
+            <label for="public_key">Public Key</label>
+        </p>
+        <textarea id="public_key" rows="2" cols="100"></textarea>
+
+        <p>
+            <label for="private_key">Private Key</label>
+        </p>
+        <textarea id="private_key" rows="1" cols="100"></textarea>
+
+        <p>
+            <label for="blockchain_address">Blockchain Address</label>
+        </p>
+        <textarea id="blockchain_address" rows="1" cols="100"></textarea>
+    </div>
+
+    <div class="augmented send_control" augmented-ui="r-rect bl-rect t-clip-x exe">
+        <h1>Send Money</h1>
+        <p>
+            <label for="recipient_blockchain_address">Address</label>
+        </p>
+        <input id="recipient_blockchain_address" size="100" type="text"/>
+
+        <p>
+            <label for="send_amount">Amount</label>
+        </p>
+        <input id="send_amount" size="100" type="text"/>
+
+        <p>
+            <button id="send_button" class="btn selection-positive">Send</button>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

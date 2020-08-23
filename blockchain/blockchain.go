@@ -3,6 +3,7 @@ package blockchain
 import (
 	"blockchain/utils"
 	"crypto/ecdsa"
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -17,14 +18,16 @@ type Blockchain struct {
 	transactionPool   []*Transaction
 	chain             []*Block
 	blockchainAddress string
+	port              uint16
 }
 
 // Instantiate a blockchain
-func NewBlockchain(blockchainAddress string) *Blockchain {
+func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	b := &Block{} // initial block
 	bc := new(Blockchain)
 	bc.blockchainAddress = blockchainAddress
 	bc.chainNewBlock(0, b.Hash())
+	bc.port = port
 	return bc
 }
 
@@ -121,6 +124,14 @@ func (bc *Blockchain) proofOfWork() int {
 		nonce++
 	}
 	return nonce
+}
+
+func (bc *Blockchain) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Blocks []*Block `json:"blocks"`
+	}{
+		Blocks: bc.chain,
+	})
 }
 
 // Print the blockchain
