@@ -15,6 +15,32 @@
                     console.error(error)
                 }
             })
+
+            $('#send_button').click(function () {
+                if (!confirm('Are you sure to send?')) {
+                    alert('Sending canceled.')
+                    return
+                }
+                $.ajax({
+                    url: '/transaction',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        'sender_private_key': $('#private_key').val(),
+                        'sender_public_key': $('#public_key').val(),
+                        'sender_blockchain_address': $('#blockchain_address').val(),
+                        'recipient_blockchain_address': $('#recipient_blockchain_address').val(),
+                        'value': $('#send_amount').val(),
+                    }),
+                    success: function (response) {
+                        console.info(response)
+                        alert('Sent your money!')
+                    }, error: function (error) {
+                        console.error(error)
+                        alert('Something went wrong!')
+                    }
+                })
+            })
         })
     </script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/augmented-ui/augmented.css">
